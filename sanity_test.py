@@ -14,7 +14,6 @@ from src.utils import set_seed, ModelCheckpoint, EarlyStopping
 from src.trainer import train_model
 
 
-
 @hydra.main(version_base=None, config_path='config', config_name='config')
 def main(cfg: DictConfig):
 
