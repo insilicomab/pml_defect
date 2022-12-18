@@ -28,8 +28,10 @@ img_dir: '/content/drive/MyDrive/Colab Notebooks/pml_defect/input/train_data'
 train_master_dir: '/content/drive/MyDrive/Colab Notebooks/pml_defect/input/train.csv'
 save_model_dir: '/content/drive/MyDrive/Colab Notebooks/pml_defect/model'
 num_classes: 2
+embedding_size: 512
 image_size: 224
 seed: 0
+epochs: 20
 
 
 train_test_split:
@@ -78,9 +80,11 @@ test_transform:
         mean: [0.485, 0.456, 0.406]
         std: [0.229, 0.224, 0.225]
 
-model:
-    model_name: 'convnext_base'
+convnext_base:
     pretrained: True
+
+accuracy_calculator:
+    k: 'max_bin_count'
 
 optimizer:
     name: Adam
