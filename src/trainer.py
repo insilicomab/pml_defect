@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import pytorch_metric_learning
 from pytorch_metric_learning import testers
+import wandb
 
 
 def train(model, loss_fn, train_dataloader, device, epoch, optimizer, loss_optimizer):
@@ -51,6 +52,7 @@ def calculate_accuracy(train_dataset, test_dataset, model, accuracy_calculator):
     )
     print('Computing accuracy')
     print(f'test_Precision@1 = {accuracies["precision_at_1"]:.03f}, test_NMI = {accuracies["NMI"]:.03f}, test_AMI = {accuracies["AMI"]:.03f}, test_r_precision = {accuracies["r_precision"]:.03f}, test_mean_average_precision_at_r = {accuracies["mean_average_precision_at_r"]:.03f}')
+    return accuracies
 
 
 def train_model(
@@ -72,7 +74,42 @@ def train_model(
     for epoch in range(1, cfg.epochs + 1):
         train_loss = train(model, loss, train_dataloader, device, epoch, optimizer, loss_optimizer)
         val_loss = test(model, loss, test_dataloader, device, epoch)
-        calculate_accuracy(train_dataset, test_dataset, model, accuracy_calculator)
+        accuracies=calculate_accuracy(train_dataset, test_dataset, model, accuracy_calculator)
+        if model_checkpoint:
+            model_checkpoint(model, val_loss)
+        if early_stopping:
+            if early_stopping(val_loss):
+                break
+
+
+def train_model_wandb(
+    cfg, 
+    model, 
+    loss, 
+    train_dataset, 
+    test_dataset, 
+    train_dataloader, 
+    test_dataloader, 
+    device, 
+    accuracy_calculator, 
+    optimizer, 
+    loss_optimizer=None, 
+    model_checkpoint=None, 
+    early_stopping=None
+    ):
+    best_loss = np.inf
+    for epoch in range(1, cfg.epochs + 1):
+        train_loss = train(model, loss, train_dataloader, device, epoch, optimizer, loss_optimizer)
+        val_loss = test(model, loss, test_dataloader, device, epoch)
+        accuracies=calculate_accuracy(train_dataset, test_dataset, model, accuracy_calculator)
+        wandb.log({'train_loss':train_loss, 'val_loss':val_loss})
+        wandb.log({
+            'test_Precision@1':accuracies["precision_at_1"], 
+            'test_NMI':accuracies["NMI"], 
+            'test_AMI':accuracies["AMI"], 
+            'test_r_precision':accuracies["r_precision"], 
+            'test_mean_average_precision_at_r':accuracies["mean_average_precision_at_r"]
+        })
         if model_checkpoint:
             model_checkpoint(model, val_loss)
         if early_stopping:
