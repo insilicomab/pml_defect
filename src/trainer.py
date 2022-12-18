@@ -50,12 +50,26 @@ def calculate_accuracy(train_dataset, test_dataset, model, accuracy_calculator):
         test_embeddings, train_embeddings, test_labels, train_labels, False
     )
     print('Computing accuracy')
-    print(f'test_Precision@1 = {accuracies["precision_at_1"]}, test_NMI = {accuracies["NMI"]}, test_AMI = {accuracies["AMI"]}, test_r_precision = {accuracies["r_precision"]}, test_mean_average_precision_at_r = {accuracies["mean_average_precision_at_r"]}')
+    print(f'test_Precision@1 = {accuracies["precision_at_1"]:.03f}, test_NMI = {accuracies["NMI"]:.03f}, test_AMI = {accuracies["AMI"]:.03f}, test_r_precision = {accuracies["r_precision"]:.03f}, test_mean_average_precision_at_r = {accuracies["mean_average_precision_at_r"]:.03f}')
 
 
-def train_model(model, loss, train_dataset, test_dataset, train_dataloader, test_dataloader, device, epochs, accuracy_calculator, optimizer, loss_optimizer=None, model_checkpoint=None, early_stopping=None):
+def train_model(
+    cfg, 
+    model, 
+    loss, 
+    train_dataset, 
+    test_dataset, 
+    train_dataloader, 
+    test_dataloader, 
+    device, 
+    accuracy_calculator, 
+    optimizer, 
+    loss_optimizer=None, 
+    model_checkpoint=None, 
+    early_stopping=None
+    ):
     best_loss = np.inf
-    for epoch in range(1, epochs + 1):
+    for epoch in range(1, cfg.epochs + 1):
         train_loss = train(model, loss, train_dataloader, device, epoch, optimizer, loss_optimizer)
         val_loss = test(model, loss, test_dataloader, device, epoch)
         calculate_accuracy(train_dataset, test_dataset, model, accuracy_calculator)
