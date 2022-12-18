@@ -1,0 +1,129 @@
+## Hydra Settings ##
+defaults:  
+  - _self_  
+  - override hydra/hydra_logging: disabled  
+  - override hydra/job_logging: disabled  
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+  sweep:
+    dir: .
+    subdir: .
+
+
+## WanDB Settings ##
+wandb:
+    project: pml-defect
+    run_name: ''
+    tags: []
+    notes: ''
+    data_dir: ${img_dir}
+    model_name: ${net.model_name}
+
+
+## User Settings ##
+img_dir: '/content/drive/MyDrive/Colab Notebooks/defect/input/train_data'
+train_master_dir: '/content/drive/MyDrive/Colab Notebooks/defect/input/train.csv'
+save_model_dir: '/content/drive/MyDrive/Colab Notebooks/defect/model/'
+num_classes: 2
+image_size: 224
+seed: 0
+
+
+train_test_split:
+    test_size: 0.25
+    random_state: 42
+
+train_dataloader:
+    batch_size: 4
+    shuffle: True
+    num_workers: 2
+    pin_memory: True
+
+val_dataloader:
+    batch_size: 4
+    shuffle: False # DO NOT CHANGE!!!
+    num_workers: 2
+    pin_memory: True
+  
+train_transform:
+    resize:
+        image_size: ${image_size}
+    random_horizontal_flip:
+        p: 0.5
+    random_vertical_flip:
+        p: 0.5
+    random_rotation:
+        degrees: 20
+    random_affine:
+        degrees: [-90, 90]
+        translate: [0, 0]
+        scale: [1.0, 1.0]
+        shear: [-0.2, 0.2]
+    color_jitter:
+        brightness: 0.1
+        contrast: 0.1
+        saturation: 0.1
+        hue: 0
+    normalize:
+        mean: [0.485, 0.456, 0.406]
+        std: [0.229, 0.224, 0.225]
+
+test_transform:
+    resize:
+        image_size: ${image_size}
+    normalize:
+        mean: [0.485, 0.456, 0.406]
+        std: [0.229, 0.224, 0.225]
+
+net:
+    model_name: 'convnext_base'
+    pretrained: True
+
+metrics:
+    precision:
+        average: 'micro'
+    recall:
+        average: 'micro'
+    specificity:
+        average: 'micro'
+    f1:
+        average: 'micro'
+    f_beta:
+        beta: 0.5
+        average: 'micro'
+    auroc:
+        average: 'macro'
+
+callbacks:
+    early_stopping:
+        enable: True
+        monitor: 'val_loss'
+        patience: 10
+        mode: 'min'
+    model_checkpoint:
+        enable: True
+        monitor: 'val_loss'
+        mode: 'min'
+        save_top_k: 1
+        save_last: False
+
+trainer:
+    max_epochs: 100
+    gpus: 1
+    accumulate_grad_batches: 32
+    auto_lr_find: True
+
+loss_fn:
+    name: 'CrossEntropyLoss'
+
+optimizer:
+    name: Adam
+    adam:
+        lr: 1e-4
+        weight_decay: 1e-5
+    sgd:
+        lr: 1e-4
+        weight_decay: 1e-5
