@@ -1,12 +1,12 @@
 from pytorch_metric_learning import losses, distances, regularizers
 
 
-def get_arcfaceloss():
+def get_arcfaceloss(cfg):
     distance = distances.CosineSimilarity()
     regularizer = regularizers.RegularFaceRegularizer()
     loss = losses.ArcFaceLoss(
-        num_classes=2,
-        embedding_size=512,
+        num_classes=cfg.num_classes,
+        embedding_size=cfg.embedding_size,
         margin=28.6,
         scale=64,
         weight_regularizer=regularizer, 
