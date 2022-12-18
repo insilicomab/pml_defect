@@ -84,11 +84,11 @@ def main(cfg: DictConfig):
     )
 
     # model
-    model = ConvnextBase()
+    model = ConvnextBase(cfg=cfg)
     model = model.to(device)
 
     # loss
-    loss, _, _ = get_arcfaceloss()
+    loss, _, _ = get_arcfaceloss(cfg=cfg)
     loss = loss.to(device)
 
     # optimizer
@@ -96,19 +96,33 @@ def main(cfg: DictConfig):
     loss_optimizer = get_optimizer(cfg, loss)
 
     # accuracy calculator
-    accuracy_calculator = AccuracyCalculator(k='max_bin_count')
+    accuracy_calculator = AccuracyCalculator(k=cfg.accuracy_calculator.k)
 
     # model checkpoint
     model_checkpoint = ModelCheckpoint(
         save_model_path=SAVE_MODEL_PATH,
-        filename='best'
+        filename='best_convnext_base'
     )
 
     # early stopping
     early_stopping = EarlyStopping()
 
     # train
-    train_model(model, loss, train_dataset, val_dataset, train_dataloader, val_dataloader, device, 10, accuracy_calculator, optimizer, loss_optimizer, model_checkpoint, early_stopping)
+    train_model(
+        cfg, 
+        model, 
+        loss, 
+        train_dataset, 
+        val_dataset, 
+        train_dataloader, 
+        val_dataloader, 
+        device, 
+        accuracy_calculator, 
+        optimizer, 
+        loss_optimizer, 
+        model_checkpoint, 
+        early_stopping
+    )
 
 
 if __name__ == "__main__":
