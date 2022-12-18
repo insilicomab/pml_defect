@@ -109,19 +109,19 @@ def main(cfg: DictConfig):
 
     # train
     train_model(
-        cfg, 
-        model, 
-        loss, 
-        train_dataset, 
-        val_dataset, 
-        train_dataloader, 
-        val_dataloader, 
-        device, 
-        accuracy_calculator, 
-        optimizer, 
-        loss_optimizer, 
-        model_checkpoint, 
-        early_stopping
+        cfg=cfg, 
+        model=model, 
+        loss=loss, 
+        train_dataset=train_dataset, 
+        test_dataset=val_dataset, 
+        train_dataloader=train_dataloader, 
+        test_dataloader=val_dataloader, 
+        device=device, 
+        accuracy_calculator=accuracy_calculator, 
+        optimizer=optimizer, 
+        loss_optimizer=loss_optimizer, 
+        model_checkpoint=model_checkpoint, 
+        early_stopping=early_stopping,
     )
 
 
