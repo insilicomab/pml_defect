@@ -94,3 +94,9 @@ optimizer:
     sgd:
         lr: 1e-4
         weight_decay: 1e-5
+
+scheduler:
+    name: CosineAnnealingWarmRestarts
+    CosineAnnealingWarmRestarts:
+        T_0: 10
+        eta_min: 1e-6
