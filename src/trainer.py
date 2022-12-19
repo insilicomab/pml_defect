@@ -46,9 +46,10 @@ class Trainer():
             loss.backward()
             optimizer.step()
             loss_optimizer.step()
-            total_loss += loss.detach().cpu().numpy()
-        print(f'Epoch {epoch}: train_loss = {total_loss}')
-        return total_loss
+            total_loss += loss.detach().cpu().numpy().item() * data.size(0)
+        train_loss = total_loss / len(train_dataloader.dataset)
+        print(f'Epoch {epoch}: train_loss = {train_loss}')
+        return train_loss
 
 
     def _test(self, model, loss_fn, test_dataloader, device, epoch):
@@ -59,9 +60,10 @@ class Trainer():
                 data, labels = data.to(device), labels.to(device)
                 embeddings = model(data)
                 loss = loss_fn(embeddings, labels)
-                total_loss += loss.detach().cpu().numpy()
-            print(f'Epoch {epoch}: test_loss = {total_loss}')
-            return total_loss
+                total_loss += loss.detach().cpu().numpy().item() * data.size(0)
+            test_loss = total_loss / len(test_dataloader.dataset)
+            print(f'Epoch {epoch}: test_loss = {test_loss}')
+            return test_loss
     
 
     def _get_all_embeddings(self, dataset, model):
