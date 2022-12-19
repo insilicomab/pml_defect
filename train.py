@@ -13,7 +13,7 @@ import wandb
 from src.dataset import SubstrateDataset, Transforms
 from src.model import ConvnextBase, get_arcfaceloss, get_optimizer
 from src.utils import set_seed, ModelCheckpoint, EarlyStopping
-from src.trainer import train_model_wandb
+from src.trainer import Trainer
 
 
 @hydra.main(version_base=None, config_path='config', config_name='config')
@@ -121,13 +121,16 @@ def main(cfg: DictConfig):
     )
 
     # early stopping
-    early_stopping = EarlyStopping()
+    early_stopping = EarlyStopping(
+        patience=cfg.earlystopping.patience,
+        verbose=cfg.earlystopping.verbose
+    )
 
     # wandb
     wandb.watch(model, log="all")
 
     # train
-    train_model_wandb(
+    trainer = Trainer(
         cfg=cfg, 
         model=model, 
         loss=loss, 
@@ -138,8 +141,11 @@ def main(cfg: DictConfig):
         device=device, 
         accuracy_calculator=accuracy_calculator, 
         optimizer=optimizer, 
-        loss_optimizer=loss_optimizer, 
-        model_checkpoint=model_checkpoint, 
+        loss_optimizer=loss_optimizer,
+    )
+
+    trainer.train_model_wandb(
+        model_checkpoint=model_checkpoint,
         early_stopping=early_stopping,
     )
 
