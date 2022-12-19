@@ -100,3 +100,7 @@ scheduler:
     CosineAnnealingWarmRestarts:
         T_0: 10
         eta_min: 1e-6
+
+earlystopping:
+    patience: 1
+    verbose: 1
