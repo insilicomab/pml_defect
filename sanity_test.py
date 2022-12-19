@@ -129,5 +129,6 @@ def main(cfg: DictConfig):
         early_stopping=early_stopping,
     )
 
+
 if __name__ == "__main__":
     main()
