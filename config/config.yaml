@@ -102,5 +102,5 @@ scheduler:
         eta_min: 1e-6
 
 earlystopping:
-    patience: 100
+    patience: 10
     verbose: 1
