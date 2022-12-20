@@ -8,7 +8,7 @@ from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
 import hydra
 from omegaconf import DictConfig
 
-from src.dataset import SubstrateDataset, Transforms
+from src.dataset import DefectDataset, Transforms
 from src.model import get_model, get_arcfaceloss, get_optimizer
 from src.utils import set_seed, ModelCheckpoint, EarlyStopping
 from src.trainer import Trainer
@@ -51,14 +51,14 @@ def main(cfg: DictConfig):
     os.makedirs(SAVE_MODEL_PATH, exist_ok=True)
 
     # dataset
-    train_dataset = SubstrateDataset(
+    train_dataset = DefectDataset(
         image_name_list=x_train,
         label_list=y_train,
         img_dir=cfg.img_dir,
         transform=Transforms(cfg=cfg),
         phase='train'
     )
-    val_dataset = SubstrateDataset(
+    val_dataset = DefectDataset(
         image_name_list=x_val,
         label_list=y_val,
         img_dir=cfg.img_dir,
