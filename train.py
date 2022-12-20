@@ -11,7 +11,7 @@ from omegaconf import DictConfig
 import wandb
 
 from src.dataset import SubstrateDataset, Transforms
-from src.model import ConvnextBase, get_arcfaceloss, get_optimizer
+from src.model import get_model, get_arcfaceloss, get_optimizer
 from src.utils import set_seed, ModelCheckpoint, EarlyStopping
 from src.trainer import Trainer
 
@@ -100,8 +100,9 @@ def main(cfg: DictConfig):
     )
 
     # model
-    model = ConvnextBase(
-        pretrained=cfg.convnext_base.pretrained,
+    model = get_model(
+        model_name=cfg.model.model_name,
+        pretrained=cfg.model.pretrained,
         embedding_size=cfg.embedding_size,
     )
     model = model.to(device)
