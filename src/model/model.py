@@ -22,3 +22,11 @@ class ConvnextBase(nn.Module):
         x = self.trunk(x)
         x = self.embedder(x)
         return x
+
+
+def get_model(model_name, pretrained, embedding_size):
+    if model_name=='convnext_base':
+        return ConvnextBase(
+            pretrained=pretrained,
+            embedding_size=embedding_size,
+        )
