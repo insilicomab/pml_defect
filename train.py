@@ -100,7 +100,10 @@ def main(cfg: DictConfig):
     )
 
     # model
-    model = ConvnextBase(cfg=cfg)
+    model = ConvnextBase(
+        pretrained=cfg.convnext_base.pretrained,
+        embedding_size=cfg.embedding_size,
+    )
     model = model.to(device)
 
     # loss
