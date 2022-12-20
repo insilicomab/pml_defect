@@ -3,7 +3,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 
 
-class SubstrateDataset(Dataset):
+class DefectDataset(Dataset):
     def __init__(self, image_name_list, label_list, img_dir, transform=None, phase=None):
         self.image_name_list = image_name_list
         self.label_list = label_list
