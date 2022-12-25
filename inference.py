@@ -76,6 +76,7 @@ def main(args):
     best_model = wandb.restore(f'{args.model_name}.pth', run_path=args.wandb_run_path)
 
     model.load_state_dict(torch.load(best_model.name, map_location=torch.device(device)))
+    model.eval()
     model.to(device)
 
     # inference
